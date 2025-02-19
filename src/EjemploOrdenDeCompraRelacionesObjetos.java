@@ -46,7 +46,9 @@ public class EjemploOrdenDeCompraRelacionesObjetos {
         orden5.setImpuestos(orden5.getImpuestos());
         orden5.setCliente(humbertoBustillos);
 
-
+        OrdenDeCompra orden6 = new OrdenDeCompra(franciscoZapata);
+        orden6.agregarProducto(TipoProducto.RUFFLES_O, 4, .15);
+        orden6.agregarProducto(TipoProducto.TOSTITOS_O, 5, .15);
 
 
         System.out.println(orden1.verDetalle());
@@ -54,7 +56,7 @@ public class EjemploOrdenDeCompraRelacionesObjetos {
         System.out.println(orden3.verDetalle());
         System.out.println(orden4.verDetalle());
         System.out.println(orden5.verDetalle());
-
+        System.out.println(orden6.verDetalle());
 
     }
 }

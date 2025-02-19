@@ -1,21 +1,27 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class OrdenDeCompra {
     private int id;
+    private List<ItemOrden> items;
     private TipoProducto producto;
     private int cantidad;
     private Double impuestos = .15;
     private Cliente cliente;
 
-    private static int ultimoId;
+    private static int ultimoId = 1;
 
     //Constructor
     public OrdenDeCompra(){
-        this.id = ++ ultimoId;
+        this.id = ++ultimoId;
+        this.items = new ArrayList<>(); //  Asegurar que la lista se inicializa
     }
 
     public OrdenDeCompra(TipoProducto producto, int cantidad) {
-        this(); //Llama al constructor base para asignar el ID
+        this();
         this.producto = producto;
         this.cantidad = cantidad;
+        this.items = new ArrayList<>(); //  Inicializar lista aquí también
     }
 
     public OrdenDeCompra(TipoProducto producto, int cantidad, Double impuestos) {
@@ -30,7 +36,12 @@ public class OrdenDeCompra {
 
     public OrdenDeCompra(TipoProducto producto, int cantidad, Cliente cliente) {
         this(producto, cantidad, 0.15, cliente);
-    } // este es para cuando no quieres poner el impuesto en una orden y te de el 15
+    }
+
+    public OrdenDeCompra(Cliente cliente) {
+        this(); //  Llamar al constructor base que inicializa `items`
+        this.cliente = cliente;
+    }
 
     // Getter Setter o leer asignar
 
@@ -82,22 +93,30 @@ public class OrdenDeCompra {
         return precioConImpuesto;
     }
 
+    public void agregarProducto(TipoProducto producto, int cantidad, double impuesto) {
+        items.add(new ItemOrden(producto, cantidad, impuesto));
+    }
+
     public double calcularTotal() {
-        return cantidad * agregarImpuesto();
+        return items.stream().mapToDouble(ItemOrden::calcularSubtotal).sum();
     }
 
     public String verDetalle(){
-        String detalle = "orden.id = " + this.id +
-                "\norden.producto = " + this.getProducto().getNombre() +
-                "\norden.cantidad = " + this.getCantidad() +
-                "\norden.precio base = " + this.getProducto().getPrecio();
-        if (this.getImpuestos() != null) {
-            detalle +=  "\norden.impuestos = " + this.getImpuestos();
+        StringBuilder detalle = new StringBuilder("Orden ID: " + id + "\nCliente: " + cliente + "\nProductos:\n");
+        for (ItemOrden item : items) {
+            detalle.append(" - ").append(item).append("\n");
         }
-        detalle += "\norden.cliente = " + this.getCliente() +
-                "\norden.precio con impuesto = " + this.agregarImpuesto() +
-                "\norden.total = " + this.calcularTotal();
-        return detalle;
+        detalle.append("Total: ").append(calcularTotal());
+        return detalle.toString();
     }
 
+    @Override
+    public String toString() {
+        return "OrdenDeCompra " +
+                "id=" + id +
+                ", producto=" + producto +
+                ", cantidad=" + cantidad +
+                ", impuestos=" + impuestos +
+                ", cliente=" + cliente;
+    }
 }
